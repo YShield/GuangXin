@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>广东信息工程职业学院 2026-2027学年第一学期课表</title>
+<style>
+  :root {
+    --ink: #e8efe9;            /* 微绿暖白正文 */
+    --muted: #8fa097;
+    --line: #2b3730;
+    --card: #1b2420;           /* 深色卡片表面 */
+    --bg: #121814;             /* 深墨绿基底 */
+    --accent: #6fbf9c;         /* 雾玉绿 · 主色（暗底高对比） */
+    --accent-soft: #24332b;
+    --amber: #d0a75e;          /* 哑金点缀 */
+    --amber-soft: #3a2f1d;
+    --blue: #8ba5ba;           /* 雾蓝冷调 */
+    --blue-soft: #22303a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(180deg, #161d19 0%, #0f1511 100%);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    padding: 40px 20px 64px;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+
+  /* ---------- 头部 ---------- */
+  header {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px 32px 26px;
+    margin-bottom: 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.35);
+    border-top: 3px solid var(--accent);
+  }
+  .school { font-size: 13px; letter-spacing: .08em; color: var(--accent); font-weight: 600; margin-bottom: 6px; }
+  h1 { font-size: 24px; font-weight: 700; letter-spacing: .02em; }
+  .meta { display: flex; flex-wrap: wrap; gap: 10px 32px; margin-top: 18px; }
+  .meta div { font-size: 14px; color: var(--muted); }
+  .meta b { color: var(--ink); font-weight: 600; margin-left: 6px; }
+
+  /* ---------- 课表网格 ---------- */
+  .timetable {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,.35);
+  }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  th, td { vertical-align: top; text-align: left; }
+  thead th {
+    font-size: 14px; font-weight: 600; padding: 14px 10px;
+    border-bottom: 1px solid var(--line);
+    background: #202a25;
+  }
+  thead th:first-child { text-align: center; color: var(--muted); font-weight: 500; width: 86px; }
+  .day-head { color: var(--ink); text-align: center; }
+  .day-head .en { display: block; font-size: 11px; color: var(--muted); font-weight: 400; margin-top: 2px; letter-spacing: .06em; }
+
+  td.time { text-align: center; font-size: 12px; color: var(--muted); border-right: 1px solid var(--line); }
+  td.time b { display: block; font-size: 14px; color: var(--ink); font-weight: 600; margin-bottom: 2px; }
+  td.cell { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 10px 12px; }
+  td.cell:last-child { border-right: none; }
+  tr:last-child td { border-bottom: none; }
+  td.empty { background: #171f1b; }
+
+  /* ---------- 课程悬停动效 ---------- */
+  .course-box {
+    border-radius: 10px;
+    padding: 2px;
+    transform-origin: center;
+    will-change: transform;
+    transition: transform .5s cubic-bezier(.22, .61, .36, 1),
+                box-shadow .5s cubic-bezier(.22, .61, .36, 1),
+                background-color .5s ease;
+  }
+  @media (hover: hover) {
+    td.cell:not(.empty):hover .course-box {
+      transform: scale(1.06);
+      background-color: #26342c;
+      box-shadow: 0 18px 38px rgba(0, 0, 0, .55);
+      position: relative;
+      z-index: 5;
+    }
+  }
+
+  .course { display: block; font-size: 13.5px; font-weight: 600; color: var(--ink); }
+  .course .badge { font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; margin-left: 4px; vertical-align: 1px; }
+  .badge.single { background: var(--accent-soft); color: var(--accent); }
+  .badge.double { background: var(--amber-soft); color: var(--amber); }
+  .loc { display: block; font-size: 12px; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+  .teacher { display: block; font-size: 12px; color: var(--accent); margin-top: 3px; font-weight: 500; }
+  .weeks { display: block; font-size: 11px; color: var(--blue); margin-top: 3px; }
+
+  .period-note { font-size: 11px; color: var(--muted); }
+
+  /* ---------- 课程总览 ---------- */
+  .overview { margin-top: 28px; }
+  .overview h2 { font-size: 16px; font-weight: 700; margin-bottom: 14px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip {
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+    padding: 7px 16px; font-size: 13px; color: var(--ink);
+  }
+  .chip b { color: var(--accent); font-weight: 600; margin-right: 6px; }
+
+  /* ---------- 时间说明 ---------- */
+  .legend { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 18px; font-size: 13px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  .dot.g { background: var(--accent); }
+  .dot.a { background: var(--amber); }
+  .dot.b { background: var(--blue); }
+
+  footer { margin-top: 32px; text-align: center; font-size: 12px; color: var(--muted); }
+
+  @media (max-width: 760px) {
+    body { padding: 16px 10px 40px; }
+    h1 { font-size: 19px; }
+    header { padding: 20px; }
+    .timetable { overflow-x: auto; }
+    table { min-width: 860px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="school">广东信息工程职业学院 · 计算机学院</div>
+    <h1>2026—2027学年第一学期课表</h1>
+    <div class="meta">
+      <div>院（系）/部<b>计算机学院</b></div>
+      <div>年级<b>2025</b></div>
+      <div>专业<b>计算机网络技术 · 信息安全技术应用</b></div>
+    </div>
+  </header>
+
+  <section class="timetable">
+    <table>
+      <thead>
+        <tr>
+          <th>节次</th>
+          <th class="day-head">星期一<span class="en">MON</span></th>
+          <th class="day-head">星期二<span class="en">TUE</span></th>
+          <th class="day-head">星期三<span class="en">WED</span></th>
+          <th class="day-head">星期四<span class="en">THU</span></th>
+          <th class="day-head">星期五<span class="en">FRI</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="time"><b>①</b>08:00<br>08:40</td>
+          <td class="cell">
+            <div class="course-box">
+<span class="course">网络安全与防护 </span>
+            <span class="loc">行政楼308 · 大数据金融分析实训室</span>
+            <span class="teacher">郑子扬</span>
+            <span class="weeks">第 1–16 周</span>
+            </div>
+          </td>
+          <td class="cell empty"></td>
+          <td class="cell">
+            <div class="course-box">
+<span class="course">网络安全与防护 </span>
+            <span class="loc">行政楼308 · 大数据金融分析实训室</span>
+            <span class="teacher">郑子扬</span>
+            <span class="weeks">第 1–16 周</span>
+            </div>
+          </td>
+          <td class="cell">
+            <div class="course-box">
+<span class="course">网络组建与互联 </span>
+            <span class="loc">行政楼308 · 大数据金融分析实训室</span>
+            <span class="teacher">李学辉</span>
+            <span class="weeks">第 1–16 周</span>
+            </div>
+          </td>
+          <td class="cell empty"></td>
+        </tr>
+        <tr>
+          <td class="time"><b>②</b>08:50<br>09:30</td>
+          <td class="cell empty"></td>
+          <td class="cell">
+            <div class="course-box">
+<span class="course">Web前端开发 </span>
+            <span class="loc">3栋501</span>
+            <span class="teacher">冯倩</span>
+            <span class="weeks">第 1–16 周</span>
+            </div>
+          </td>
+          <td class="cell empty"></td>
+          <td class="cell empty"></td>
+          <td class="cell empty"></td>
+        </tr>
+        <tr>
+          <td class="time"><b>③</b>09:40<br>10:20</td>
+          <td class="cell">
+            <div class="course-box">
+<span class="course">职业生涯与就业指导 </span>
+            <span class="loc">3栋501（跨列）</span>
+            <span class="teacher">冯倩</span>
+            <span class="weeks">第 1–4 周</span>
+            </div>
+          </td>
+          <td class="cell empty"></td>
+          <td class="cell empty"></td>
+          <td class="cell">
+            <div class="course-box">
+<span class="course">Web前端开发 </span>
+            <span class="loc">3栋501</span>
+            <span class="teacher">冯倩</span>
+            <span class="weeks">第 1–16 周</span>
+            </div>
+          </td>
+          <td class="cell empty"></td>
+        </tr>
+        <tr>
+          <td class="time"><b>⑥</b>13:40<br>14:20</td>
+          <td class="cell empty"></td>
+          <td class="cell">
+            <div class="course-box">
+<span class="course">网络操作系统及应用 </span>
+            <span class="loc">行政楼308 · 大数据金融分析实训室</span>
+            <span class="teacher">陈勇成</span>
+            <span class="weeks">第 1–16 周</span>
+            </div>
+          </td>
+          <td class="cell empty"></td>
+          <td class="cell empty"></td>
+          <td class="cell">
+            <div class="course-box">
+<span class="course">网络操作系统及应用 </span>
+            <span class="loc">行政楼308 · 大数据金融分析实训室</span>
+            <span class="teacher">陈勇成</span>
+            <span class="weeks">第 1–16 周</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="time"><b>⑧</b>15:20<br>16:00</td>
+          <td class="cell empty"></td>
+          <td class="cell">
+            <div class="course-box">
+<span class="course">网络组建与互联 </span>
+            <span class="loc">行政楼308 · 大数据金融分析实训室</span>
+            <span class="teacher">李学辉</span>
+            <span class="weeks">第 1–16 周</span>
+            </div>
+          </td>
+          <td class="cell">
+            <div class="course-box">
+<span class="course">走在前列的广东实践 </span>
+            <span class="loc">医健教室2</span>
+            <span class="teacher">张晓民</span>
+            <span class="weeks">第 1–4 周</span>
+            </div>
+          </td>
+          <td class="cell empty"></td>
+          <td class="cell">
+            <div class="course-box">
+<span class="course">劳动教育 </span>
+            <span class="loc">3栋207</span>
+            <span class="teacher">杨硕</span>
+            <span class="weeks">第 3–4 周</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="time"><b>⑩</b>17:00<br>17:40</td>
+          <td class="cell empty"></td>
+          <td class="cell empty"></td>
+          <td class="cell">
+            <div class="course-box">
+<span class="course">网络数据库管理 </span>
+            <span class="loc">行政楼308 · 大数据金融分析实训室</span>
+            <span class="teacher">欧阳飞</span>
+            <span class="weeks">第 1–16 周</span>
+            </div>
+          </td>
+          <td class="cell">
+            <div class="course-box">
+<span class="course">形势与政策3 </span>
+            <span class="loc">医健教室1</span>
+            <span class="teacher">卢欣如</span>
+            <span class="weeks">第 1–4 周</span>
+            </div>
+          </td>
+          <td class="cell empty"></td>
+        </tr>
+        <tr>
+          <td class="time"><b>⑫</b>19:15<br>19:55</td>
+          <td class="cell">
+            <div class="course-box">
+<span class="course">网络数据库管理 </span>
+            <span class="loc">行政楼308 · 大数据金融分析实训室</span>
+            <span class="teacher">欧阳飞</span>
+            <span class="weeks">第 1–16 周</span>
+            </div>
+          </td>
+          <td class="cell empty"></td>
+          <td class="cell empty"></td>
+          <td class="cell empty"></td>
+          <td class="cell empty"></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="overview">
+    <h2>课程总览</h2>
+    <div class="chips">
+      <span class="chip"><b>网络安全与防护</b>1–16周</span>
+      <span class="chip"><b>Web前端开发</b>1–16周</span>
+      <span class="chip"><b>网络操作系统及应用</b>1–16周</span>
+      <span class="chip"><b>网络组建与互联</b>1–16周</span>
+      <span class="chip"><b>网络数据库管理</b>1–16周</span>
+      <span class="chip"><b>职业生涯与就业指导</b>1–4周</span>
+      <span class="chip"><b>走在前列的广东实践</b>1–4周</span>
+      <span class="chip"><b>形势与政策3</b>1–4周</span>
+      <span class="chip"><b>劳动教育</b>3–4周</span>
+    </div>
+    <div class="legend">
+      <span><i class="dot g"></i>实训课（行政楼308）</span>
+      <span><i class="dot a"></i>理论 / 合班课</span>
+      <span><i class="dot b"></i>通识课</span>
+      <span>共 9 门</span>
+    </div>
+    <p style="margin-top:14px;font-size:13px;color:var(--muted)">说明：全部课程均为<b style="color:var(--accent)">单双周轮换</b>上课。</p>
+  </section>
+
+  <footer>广东信息工程职业学院 · 计算机学院 · 2025级计算机网络技术 / 信息安全技术应用 专业课表</footer>
+</div>
+</body>
+</html>
